@@ -26,11 +26,6 @@ def load_models():
     cls_model = joblib.load(r'Datasets and Models/cls_model.pkl')
     return target_encoder_reg, target_encoder_cls, scaler_reg, scaler_cls, pca_reg, pca_cls, reg_model, cls_model
 
-# def get_random_value(column_name):
-#     # Get a random value from the specified column in the data
-#     values = data[column_name].unique()
-#     return random.choice(values)
-
 def preprocess_input_reg(target_encoder, scaler, pca, input_data):
     # Copy the input data to avoid modifying the original dataframe
     df = input_data.copy()
