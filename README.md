@@ -1,4 +1,5 @@
 # Copper Price Prediction and Leads Classification Web App
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://industrial-copper-modelling.streamlit.app/)
 
 The Copper Price Prediction and Leads Classification project is a web application that allows users to predict the price of copper and classify leads as "Won" or "Lost" based on various features related to copper products. The application is powered by machine learning models, including a Random Forest Regressor for price prediction and a Random Forest Classifier for leads classification.
 
