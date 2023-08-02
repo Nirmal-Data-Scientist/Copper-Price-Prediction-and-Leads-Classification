@@ -42,7 +42,7 @@ Before you begin, ensure you have the following tools installed:
 
 To run the app, follow these steps:
 
-1. Clone the repository to your local machine using the following command: `git clone [repository_url]`.
+1. Clone the repository to your local machine using the following command: `git clone [https://github.com/Nirmal-Data-Scientist/Copper-Price-Prediction-and-Leads-Classification.git]`.
 2. Install the required libraries by running the following command: `pip install -r requirements.txt`.
 3. Open a terminal window and navigate to the directory where the app is located using the following command: `cd [app_directory]`.
 4. Run the command `streamlit run app.py` to start the app.
