@@ -27,7 +27,7 @@ def load_models():
     return target_encoder_reg, target_encoder_cls, scaler_reg, scaler_cls, pca_reg, pca_cls, reg_model, cls_model
 
 def preprocess_input_reg(target_encoder, scaler, pca, input_data):
-    # Copy the input data to avoid modifying the original dataframe
+
     df = input_data.copy()
 
     # Initialize the one-hot encoded columns with 0
@@ -45,13 +45,10 @@ def preprocess_input_reg(target_encoder, scaler, pca, input_data):
     # Update leads value in the original dataframe
     df['leads'] = 1 if user_leads == 'Won' else 0
 
-    # Concatenate the one-hot encoded columns with the original dataframe
     df = pd.concat([df, df_ohe_country_code, df_ohe_product_ref], axis=1)
 
-    # Drop the original columns as they are not needed anymore
     df.drop(['country_code', 'product_ref'], axis=1, inplace=True)
     
-    # Reorder the columns based on the desired order
     desired_column_order = ['quantity_tons', 'customer_id', 'item_type', 'application', 'thickness',
                             'width', 'leads', 'country_code_113', 'country_code_25',
                             'country_code_26', 'country_code_27', 'country_code_28',
@@ -76,21 +73,17 @@ def preprocess_input_reg(target_encoder, scaler, pca, input_data):
 
     df = df[desired_column_order]
     
-    # Target encode specified columns for regression
     df = target_encoder.transform(df)
 
-    # Scale continuous variables for regression
     continuous_vars = ['quantity_tons', 'thickness', 'width']
     df[continuous_vars] = scaler.transform(df[continuous_vars])
 
-    # Apply PCA for regression
     df_pca = pca.transform(df)
 
     return df_pca
 
 def preprocess_input_cls(target_encoder, scaler, pca, input_data):
     
-    # Copy the input data to avoid modifying the original dataframe
     df = input_data.copy()
 
     # Initialize the one-hot encoded columns with 0
@@ -104,13 +97,10 @@ def preprocess_input_cls(target_encoder, scaler, pca, input_data):
     df_ohe_country_code[user_country_code] = 1
     df_ohe_product_ref[user_product_ref] = 1
 
-    # Concatenate the one-hot encoded columns with the original dataframe
     df = pd.concat([df, df_ohe_country_code, df_ohe_product_ref], axis=1)
 
-    # Drop the original columns as they are not needed anymore
     df.drop(['country_code', 'product_ref'], axis=1, inplace=True)
     
-    # Reorder the columns based on the desired order
     desired_column_order = ['quantity_tons', 'customer_id', 'item_type', 'application', 'thickness',
                             'width', 'selling_price', 'country_code_113', 'country_code_25',
                             'country_code_26', 'country_code_27', 'country_code_28',
@@ -135,14 +125,11 @@ def preprocess_input_cls(target_encoder, scaler, pca, input_data):
 
     df = df[desired_column_order]
     
-    # Target encode specified columns for regression
     df = target_encoder.transform(df)
 
-    # Scale continuous variables for regression
     continuous_vars = ['quantity_tons', 'thickness', 'width', 'selling_price']
     df[continuous_vars] = scaler.transform(df[continuous_vars])
 
-    # Apply PCA for regression
     df_pca = pca.transform(df)
 
     return df_pca
@@ -157,7 +144,6 @@ def main():
 
     target_encoder_reg, target_encoder_cls, scaler_reg, scaler_cls, pca_reg, pca_cls, reg_model, cls_model = load_models()
 
-    # Get user input for regression
     st.subheader("Copper Price Prediction")
     
     add_vertical_space(2)
@@ -188,7 +174,6 @@ def main():
         product_ref_reg = st.selectbox("Product Reference", [val for val in data['product_ref'].unique() if val != 1282007633], index=0)
         add_vertical_space(2)
         
-    # Create a dataframe for regression input
     input_data_reg = pd.DataFrame({
         'quantity_tons': [quantity_tons_reg],
         'customer_id': [customer_id_reg],
@@ -203,16 +188,13 @@ def main():
     
     if st.button("Predict Price"):
         
-        # Preprocess the input data for regression
         input_data_reg_pca = preprocess_input_reg(target_encoder_reg, scaler_reg, pca_reg, input_data_reg)        
         
-        # Make the regression prediction
         prediction_reg = reg_model.predict(input_data_reg_pca)
         st.write("Copper Price:", prediction_reg[0])
 
     add_vertical_space(2)
     
-    # Get user input for classification
     st.subheader("Leads Classification")
     
     add_vertical_space(2)
@@ -242,7 +224,6 @@ def main():
         product_ref_cls = st.selectbox("Product Reference", [val for val in data['product_ref'].unique() if val != 1282007633], index=0, key=9)
         add_vertical_space(2)
 
-    # Create a dataframe for classification input
     input_data_cls = pd.DataFrame({
         'quantity_tons': [quantity_tons_cls],
         'customer_id': [customer_id_cls],
@@ -258,10 +239,8 @@ def main():
     
     if st.button("Predict Leads"):
     
-        # Preprocess the input data for classification
         input_data_cls_pca = preprocess_input_cls(target_encoder_cls, scaler_cls, pca_cls, input_data_cls)
     
-        # Make the classification prediction
         prediction_cls = cls_model.predict(input_data_cls_pca)
         
         if prediction_cls[0] == 1:
